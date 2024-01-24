@@ -1,7 +1,7 @@
 import pandas as pd
 import openpyxl
 
-wb = openpyxl.load_workbook('export_mod.xlsx')
+wb = openpyxl.load_workbook('export.xlsx')
 ws = wb.active
 max_col = ws.max_column
 max_row = ws.max_row
@@ -18,7 +18,8 @@ def concat_precondition(row_value):
                 values.append(str(cell.value))
 
     ws[f'B2'].value = ';'.join(values)
-    ws[f'B{row_value}'].value = None
+    for row in range(2, row_value):
+        ws[f'B{row+1}'].value = None
     wb.save('mode.xlsx')
 
 
@@ -33,7 +34,8 @@ def concat_step(row_value):
                 values.append(str(cell.value))
 
     ws[f'C2'].value = ';'.join(values)
-    ws[f'C{row_value}'].value = None
+    for row in range(2, row_value):
+        ws[f'C{row+1}'].value = None
     wb.save('mode.xlsx')
 
 
