@@ -5,7 +5,26 @@ wb = openpyxl.load_workbook('export.xlsx')
 ws = wb.active
 max_col = ws.max_column
 max_row = ws.max_row
+print(max_row)
 
+
+def prepare_xlsx():
+    ws.delete_cols(1, 1)
+    ws.delete_cols(5, 3)
+    wb.save('mode.xlsx')
+
+
+def prepare_precondition():
+    ws.move_range("C2:C4", cols=-1)
+    ws.cell(1, 2).value = "Предусловие"
+    for i in range(2, 5):
+        ws[f'D{i}'].value = None
+        pass
+    wb.save('mode.xlsx')
+"""    for i in range(2, 5):
+        cell_obj = ws.cell(row=i, column=2)
+        print(cell_obj.value)
+    """
 
 def concat_precondition(row_value):
     values = []
@@ -19,7 +38,7 @@ def concat_precondition(row_value):
 
     ws[f'B2'].value = ';'.join(values)
     for row in range(2, row_value):
-        ws[f'B{row+1}'].value = None
+        ws[f'B{row + 1}'].value = None
     wb.save('mode.xlsx')
 
 
@@ -35,7 +54,47 @@ def concat_step(row_value):
 
     ws[f'C2'].value = ';'.join(values)
     for row in range(2, row_value):
-        ws[f'C{row+1}'].value = None
+        ws[f'C{row + 1}'].value = None
+    wb.save('mode.xlsx')
+
+
+def concat_step_with_actual_result(row_value):
+    values = []
+    del values[:]
+    values_ = ''
+    for col in ws.iter_rows(min_col=3, max_col=4, min_row=2, max_row=row_value):  # values_only=False
+        for cell in col:
+            if cell.value is None:
+                pass
+            else:
+                if values_ == '':
+                    values_ += str(cell.value)
+                else:
+                    values_ += ('\nОР:\n' + str(cell.value))
+        if values_ != '':
+            values.append(values_)
+        values_ = ''
+
+    ws[f'C2'].value = ';'.join(values)
+    for row in range(2, row_value):
+        ws[f'C{row + 1}'].value = None
+    ws.delete_cols(4, 1)
+    wb.save('mode.xlsx')
+
+
+def concat_tags(row_value):
+    values = []
+    del values[:]
+    for row in ws.iter_cols(min_col=4, max_col=4, min_row=2, max_row=row_value):
+        for cell in row:
+            if cell.value is None:
+                pass
+            else:
+                values.append(str(cell.value))
+
+    ws[f'D2'].value = ';'.join(values)
+    for row in range(2, row_value):
+        ws[f'D{row + 1}'].value = None
     wb.save('mode.xlsx')
 
 
@@ -46,6 +105,11 @@ def export_to_csv():
 
 
 if __name__ == '__main__':
+    prepare_xlsx()
+    prepare_precondition()
     concat_precondition(max_row)
-    concat_step(max_row)
+    concat_step_with_actual_result(max_row)
+    concat_tags(max_row)
     export_to_csv()
+
+##concat_step(max_row)
