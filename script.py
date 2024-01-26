@@ -21,10 +21,13 @@ def prepare_precondition():
         ws[f'D{i}'].value = None
         pass
     wb.save('mode.xlsx')
+
+
 """    for i in range(2, 5):
         cell_obj = ws.cell(row=i, column=2)
         print(cell_obj.value)
     """
+
 
 def concat_precondition(row_value):
     values = []
@@ -36,7 +39,7 @@ def concat_precondition(row_value):
             else:
                 values.append(str(cell.value))
 
-    ws[f'B2'].value = ';'.join(values)
+    ws[f'B2'].value = '\n'.join(values)
     for row in range(2, row_value):
         ws[f'B{row + 1}'].value = None
     wb.save('mode.xlsx')
@@ -70,7 +73,8 @@ def concat_step_with_actual_result(row_value):
                 if values_ == '':
                     values_ += str(cell.value)
                 else:
-                    values_ += ('\nОР:\n' + str(cell.value))
+                    ##values_ += ('\nОР:\n' + str(cell.value))
+                    values_ += f'\n"ОР: \n {cell.value}"'
         if values_ != '':
             values.append(values_)
         values_ = ''
@@ -100,8 +104,7 @@ def concat_tags(row_value):
 
 def export_to_csv():
     df = pd.read_excel(r'mode.xlsx')
-    df.to_csv('export.csv', index=None, header=True)
-    df = pd.DataFrame(pd.read_csv("export.csv"))
+    df.to_csv('export.csv', index=False, header=True)
 
 
 if __name__ == '__main__':
