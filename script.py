@@ -26,15 +26,6 @@ def prepare_precondition(s):
         ##ws.move_range(f'"C2:C3"', cols=-1)
     wb.save('mode.xlsx')
 
-    ## следующий код затирает ОР предусловий
-    '''
-   for i in range(2, 5):
-        ws[f'D{i}'].value = None'''
-
-    ## получить данные в ячейке
-    '''cell_obj = ws.cell(row=i, column=2)
-    print(cell_obj.value)'''
-
 
 def concat_precondition(row_value):
     values = []
@@ -119,9 +110,10 @@ if __name__ == '__main__':
     ##prepare_precondition()
     prepare_precondition(int(sys.argv[1]))
     concat_precondition(max_row)
+    ##concat_step(max_row)
     concat_step_with_actual_result(max_row)
     concat_tags(max_row)
     export_to_csv()
 
 
-##concat_step(max_row)
+
