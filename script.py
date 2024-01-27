@@ -16,14 +16,17 @@ def prepare_xlsx():
 
 
 def prepare_precondition(s):
-    s += 1
-    ws.cell(1, 2).value = "Предусловие"
-    print(f'"C2:C{s}"')
-    for i in range(2, s+1):
-        cell_obj = ws.cell(row=i, column=3)
-        ws[f'B{i}'].value = cell_obj.value
-        ws[f'C{i}'].value = None
-        ##ws.move_range(f'"C2:C3"', cols=-1)
+    if s > 0:
+        s += 1
+        ws.cell(1, 2).value = "Предусловие"
+        print(f'"C2:C{s}"')
+        for i in range(2, s+1):
+            cell_obj = ws.cell(row=i, column=3)
+            ws[f'B{i}'].value = cell_obj.value
+            ws[f'C{i}'].value = None
+            ##ws.move_range(f'"C2:C3"', cols=-1)
+    else:
+        ws.delete_cols(2, 1)
     wb.save('mode.xlsx')
 
 
@@ -59,7 +62,7 @@ def concat_step(row_value):
     wb.save('mode.xlsx')
 
 
-def concat_step_with_actual_result(row_value):
+def concat_step_with_actual_result(row_value, s):
     values = []
     del values[:]
     values_ = ''
@@ -80,7 +83,10 @@ def concat_step_with_actual_result(row_value):
     ws[f'C2'].value = ';'.join(values)
     for row in range(2, row_value):
         ws[f'C{row + 1}'].value = None
-    ws.delete_cols(4, 1)
+    if s == 0:
+        ws.delete_cols(3, 1)
+    else:
+        ws.delete_cols(4, 1)
     wb.save('mode.xlsx')
 
 
@@ -111,7 +117,7 @@ if __name__ == '__main__':
     prepare_precondition(int(sys.argv[1]))
     concat_precondition(max_row)
     ##concat_step(max_row)
-    concat_step_with_actual_result(max_row)
+    concat_step_with_actual_result(max_row, int(sys.argv[1]))
     concat_tags(max_row)
     export_to_csv()
 
