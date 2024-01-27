@@ -87,6 +87,7 @@ def concat_step_with_actual_result(row_value, s):
         ws.delete_cols(3, 1)
     else:
         ws.delete_cols(4, 1)
+
     wb.save('mode.xlsx')
 
 
