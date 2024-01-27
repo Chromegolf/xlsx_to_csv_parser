@@ -1,5 +1,6 @@
 import pandas as pd
 import openpyxl
+import sys
 
 wb = openpyxl.load_workbook('export.xlsx')
 ws = wb.active
@@ -14,19 +15,25 @@ def prepare_xlsx():
     wb.save('mode.xlsx')
 
 
-def prepare_precondition():
-    ws.move_range("C2:C4", cols=-1)
+def prepare_precondition(s):
+    s += 1
     ws.cell(1, 2).value = "Предусловие"
-    for i in range(2, 5):
-        ws[f'D{i}'].value = None
-        pass
+    print(f'"C2:C{s}"')
+    for i in range(2, s+1):
+        cell_obj = ws.cell(row=i, column=3)
+        ws[f'B{i}'].value = cell_obj.value
+        ws[f'C{i}'].value = None
+        ##ws.move_range(f'"C2:C3"', cols=-1)
     wb.save('mode.xlsx')
 
+    ## следующий код затирает ОР предусловий
+    '''
+   for i in range(2, 5):
+        ws[f'D{i}'].value = None'''
 
-"""    for i in range(2, 5):
-        cell_obj = ws.cell(row=i, column=2)
-        print(cell_obj.value)
-    """
+    ## получить данные в ячейке
+    '''cell_obj = ws.cell(row=i, column=2)
+    print(cell_obj.value)'''
 
 
 def concat_precondition(row_value):
@@ -74,7 +81,7 @@ def concat_step_with_actual_result(row_value):
                     values_ += str(cell.value)
                 else:
                     ##values_ += ('\nОР:\n' + str(cell.value))
-                    values_ += f'\n"ОР: \n {cell.value}"'
+                    values_ += f'\nОР: \n {cell.value}'
         if values_ != '':
             values.append(values_)
         values_ = ''
@@ -109,10 +116,12 @@ def export_to_csv():
 
 if __name__ == '__main__':
     prepare_xlsx()
-    prepare_precondition()
+    ##prepare_precondition()
+    prepare_precondition(int(sys.argv[1]))
     concat_precondition(max_row)
     concat_step_with_actual_result(max_row)
     concat_tags(max_row)
     export_to_csv()
+
 
 ##concat_step(max_row)
