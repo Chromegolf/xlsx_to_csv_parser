@@ -15,15 +15,25 @@ def prepare_xlsx():
     wb.save('mode.xlsx')
 
 
+def prepare_precond(s):
+    if s > 0:
+        ws.move_range(f'C2:C{s + 1}', cols=-1)
+    ws.cell(1, 2).value = "Предусловие"
+    for i in range(2, s + 1):
+        ws[f'D{i}'].value = None
+    wb.save('mode.xlsx')
+
+
 def prepare_precondition(s):
     if s > 0:
         s += 1
         ws.cell(1, 2).value = "Предусловие"
         print(f'"C2:C{s}"')
-        for i in range(2, s+1):
+        for i in range(2, s + 1):
             cell_obj = ws.cell(row=i, column=3)
             ws[f'B{i}'].value = cell_obj.value
             ws[f'C{i}'].value = None
+            ws[f'D{i}'].value = None
             ##ws.move_range(f'"C2:C3"', cols=-1)
     else:
         ws.delete_cols(2, 1)
@@ -114,12 +124,10 @@ def export_to_csv():
 if __name__ == '__main__':
     prepare_xlsx()
     ##prepare_precondition()
-    prepare_precondition(int(sys.argv[1]))
+    prepare_precond(int(sys.argv[1]))
+    ##prepare_precondition(int(sys.argv[1]))
     concat_precondition(max_row)
     ##concat_step(max_row)
     concat_step_with_actual_result(max_row, int(sys.argv[1]))
     concat_tags(max_row)
     export_to_csv()
-
-
-
