@@ -6,7 +6,7 @@ wb = openpyxl.load_workbook('export.xlsx')
 ws = wb.active
 max_col = ws.max_column
 max_row = ws.max_row
-print(max_row)
+print(f'Max row in list: {max_row}')
 
 
 def prepare_xlsx():
@@ -15,16 +15,17 @@ def prepare_xlsx():
     wb.save('mode.xlsx')
 
 
-def prepare_precond(s):
+def prepare_precondition(s):
     if s > 0:
         ws.move_range(f'C2:C{s + 1}', cols=-1)
+        print(f'"C2:C{s}"')
     ws.cell(1, 2).value = "Предусловие"
     for i in range(2, s + 1):
         ws[f'D{i}'].value = None
     wb.save('mode.xlsx')
 
 
-def prepare_precondition(s):
+'''def prepare_precondition(s):
     if s > 0:
         s += 1
         ws.cell(1, 2).value = "Предусловие"
@@ -37,7 +38,7 @@ def prepare_precondition(s):
             ##ws.move_range(f'"C2:C3"', cols=-1)
     else:
         ws.delete_cols(2, 1)
-    wb.save('mode.xlsx')
+    wb.save('mode.xlsx')'''
 
 
 def concat_precondition(row_value):
@@ -56,7 +57,7 @@ def concat_precondition(row_value):
     wb.save('mode.xlsx')
 
 
-def concat_step(row_value):
+def concat_step_without_actual_result(row_value):
     values = []
     del values[:]
     for row in ws.iter_cols(min_col=3, max_col=3, min_row=2, max_row=row_value):
@@ -124,10 +125,9 @@ def export_to_csv():
 if __name__ == '__main__':
     prepare_xlsx()
     ##prepare_precondition()
-    prepare_precond(int(sys.argv[1]))
-    ##prepare_precondition(int(sys.argv[1]))
+    prepare_precondition(int(sys.argv[1]))
     concat_precondition(max_row)
-    ##concat_step(max_row)
+    ##concat_step_without_actual_result(max_row)
     concat_step_with_actual_result(max_row, int(sys.argv[1]))
     concat_tags(max_row)
     export_to_csv()
