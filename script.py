@@ -2,7 +2,7 @@ import pandas as pd
 import openpyxl
 import sys
 
-wb = openpyxl.load_workbook('export.xlsx')
+wb = openpyxl.load_workbook('export_zero.xlsx')
 ws = wb.active
 max_col = ws.max_column
 max_row = ws.max_row
@@ -18,9 +18,9 @@ def prepare_xlsx():
 def prepare_precondition(s):
     if s > 0:
         ws.move_range(f'C2:C{s + 1}', cols=-1)
-        print(f'"C2:C{s}"')
+        print(f'Move range of precondition is: "C2:C{s+1}"')
     ws.cell(1, 2).value = "Предусловие"
-    for i in range(2, s + 1):
+    for i in range(2, s + 2):
         ws[f'D{i}'].value = None
     wb.save('mode.xlsx')
 
@@ -95,7 +95,7 @@ def concat_step_with_actual_result(row_value, s):
     for row in range(2, row_value):
         ws[f'C{row + 1}'].value = None
     if s == 0:
-        ws.delete_cols(3, 1)
+        ws.delete_cols(2, 1)
     else:
         ws.delete_cols(4, 1)
     wb.save('mode.xlsx')
